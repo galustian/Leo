@@ -9,7 +9,7 @@ using namespace std;
 
 namespace Leo {
 
-    static constexpr long Dynamic = -1;
+    static const long Dynamic = -1;
     
     template<typename T, long Rows, long Cols>
     class Matrix {
