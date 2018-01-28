@@ -11,5 +11,13 @@ int main() {
     Matrix<float, 3, 7> mat;
     cout << mat.kColsAtCompileTime << endl;
 
+    auto& val = dynMat(2, 2);
+    cout << val << endl;
+    
+    dynMat(2, 2) = 45;
+
+    cout << dynMat(2, 2) << endl;
+    cout << val << endl;
+
     return 0;
 }

@@ -1,9 +1,9 @@
 #ifndef CORE_H
 #define CORE_H
 
-//#include <type_traits>
 #include <array>
 #include <vector>
+#include <type_traits>
 
 using namespace std;
 
@@ -18,26 +18,31 @@ namespace Leo {
                 kIsDynamicStorage = Rows == Dynamic || Cols == Dynamic
             };
 
-            //conditional<is_dynamic_storage, vector<vector<T>>, T[Rows][Cols]>::type storage;
-            //T storage[kIsDynamicStorage ? 0: Rows][kIsDynamicStorage ? 0: Cols];
-            array<array<T, kIsDynamicStorage ? 0: Cols>, kIsDynamicStorage ? 0: Rows> storage;
-
-            vector<vector<T>> dynamic_storage;
+            typename conditional<kIsDynamicStorage, 
+                                vector<vector<T>>, 
+                                array<array<T, Cols>, Rows>>::type storage;
 
         public:
             enum {
                 kRowsAtCompileTime = Rows,
                 kColsAtCompileTime = Cols
             };
-            
 
             Matrix();
-            // Matrix(long dims);
             Matrix(size_t rows, size_t cols);
+            
+            //template <bool DS = kIsDynamicStorage>
+            T& operator() (long row_i, long col_i);
+            //enable_if_t<!kIsDynamicStorage, array<array<T, Cols>, Rows>> operator() (long row_i, long col_i);
+            //auto operator() (long row_i, long col_i);
+
+            // TODO
+            // operator<<
+            // Random(4, 3)
+            // RandomNormal(4, 3)
+            // Matrix(long dims);
             // TODO ~Matrix();
             // void T();
-            // auto coef_type();
-
     };
 }
 
