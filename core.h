@@ -31,10 +31,7 @@ namespace Leo {
             Matrix();
             Matrix(size_t rows, size_t cols);
             
-            //template <bool DS = kIsDynamicStorage>
             T& operator() (long row_i, long col_i);
-            //enable_if_t<!kIsDynamicStorage, array<array<T, Cols>, Rows>> operator() (long row_i, long col_i);
-            //auto operator() (long row_i, long col_i);
 
             // TODO
             // operator<<
