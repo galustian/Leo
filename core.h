@@ -34,7 +34,7 @@ namespace Leo {
             T& operator() (long row_i, long col_i);
             
             template <typename T1, long Rows1, long Cols1>
-            friend ostream& operator<< (ostream& os, const Matrix<T1, Rows1, Cols1>& mat);
+            friend ostream& operator<< (ostream& os, const Matrix<T, Rows, Cols>& mat);
 
             static Matrix<T, Rows, Cols> Random();
  
