@@ -32,10 +32,14 @@ namespace Leo {
             Matrix(size_t rows, size_t cols);
             
             T& operator() (long row_i, long col_i);
+            
+            template <typename T1, long Rows1, long Cols1>
+            friend ostream& operator<< (ostream& os, const Matrix<T1, Rows1, Cols1>& mat);
 
+            static Matrix<T, Rows, Cols> Random();
+ 
+            
             // TODO
-            // operator<<
-            // Random(4, 3)
             // RandomNormal(4, 3)
             // Matrix(long dims);
             // TODO ~Matrix();
