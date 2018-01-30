@@ -1,8 +1,8 @@
-#ifndef CORE_H
-#define CORE_H
+#pragma once
 
 #include <array>
 #include <vector>
+#include <initializer_list>
 #include <type_traits>
 
 using namespace std;
@@ -29,12 +29,14 @@ namespace Leo {
             };
 
             Matrix();
-            Matrix(size_t rows, size_t cols);
+            Matrix(long rows, long cols);
             
             T& operator() (long row_i, long col_i);
+            void operator<< (initializer_list<T>& coefficients);
             
             template <typename T1, long Rows1, long Cols1>
-            friend ostream& operator<< (ostream& os, const Matrix<T, Rows, Cols>& mat);
+            friend ostream& operator<< (ostream& os, const Matrix<T1, Rows1, Cols1>& mat) ;
+
 
             static Matrix<T, Rows, Cols> Random();
  
@@ -48,5 +50,3 @@ namespace Leo {
 }
 
 #include "core.cpp"
-
-#endif

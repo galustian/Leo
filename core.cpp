@@ -1,5 +1,4 @@
 #include <random>
-#include <type_traits>
 #include "core.h"
 
 #define IS_DYNAMIC_ASSERT(is_dynamic) static_assert(kIsDynamicStorage, "This method is intended for dynamic storage");
@@ -12,7 +11,7 @@ namespace Leo {
     Matrix<T, Rows, Cols>::Matrix() {}
     
     template <typename T, long Rows, long Cols>
-    Matrix<T, Rows, Cols>::Matrix(size_t rows, size_t cols) {
+    Matrix<T, Rows, Cols>::Matrix(long rows, long cols) {
         IS_DYNAMIC_ASSERT(kIsDynamicStorage)
         
         storage.resize(rows);
@@ -57,5 +56,20 @@ namespace Leo {
             os << "\n";
         }
         return os;
+    }
+
+    template <typename T, long Rows, long Cols>
+    void Matrix<T, Rows, Cols>::operator<< (initializer_list<T>& coefficients) {
+        long row_i;
+        long col_i;
+        long i {0};
+
+        for (auto const& coeff: coefficients) {
+            row_i = i / Cols;
+            col_i = i % Cols;
+
+            storage[row_i][col_i] = coeff;
+            ++i;
+        }
     }
 }
