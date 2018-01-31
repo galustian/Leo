@@ -5,19 +5,26 @@ using namespace std;
 using namespace Leo;
 
 int main() {
-    auto randMat = Matrix<double, 4, 6>::Random();
+    auto randMat = Matrix<float, 18, 18>::Random();
 
     cout << randMat << endl;
 
-    Matrix<double, 2, 3> myMat;
+    Matrix<double, 3, 4> myMat;
 
     auto list = {
-        2.0, 4.5, 454566.8,
-        4.4, 45.0, 45.45
+        2., 6., 4., 8.,
+        4., 44., 48., 24.,
+        8., 4., 40., 22.
     };
     myMat << list;
 
     cout << myMat << endl;
+
+    myMat.EchelonForm();
+    randMat.EchelonForm();
+
+    cout << myMat << endl;
+    cout << randMat << endl;
 
     return 0;
 }

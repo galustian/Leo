@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <random>
 #include "core.h"
 
@@ -15,8 +16,67 @@ namespace Leo {
         IS_DYNAMIC_ASSERT(kIsDynamicStorage)
         
         storage.resize(rows);
-        for(auto& vec: storage) vec.resize(cols);
+        for(auto& row: storage) row.resize(cols);
     }
+
+    template <typename T, long Rows, long Cols>
+    void Matrix<T, Rows, Cols>::EchelonForm() {
+        double row_multiplier;
+        long top_row_i = 0;
+
+        for (long col_i = 0; col_i < storage[0].size(); col_i++) {
+            cout << "I" << endl;
+            
+            if (zero_column(col_i)) continue;
+
+            if (top_row_i == Rows-1) break;
+
+            reorder_rows_if_zero_at_top(top_row_i, col_i);
+            
+            // REDUCE ROWS BELOW top_row
+            auto top_row = storage[top_row_i];
+            for (long row_i = top_row_i+1; row_i < Rows; row_i++) {
+                auto& below_row = storage[row_i];
+                
+                double row_multiplier = below_row[col_i] / top_row[col_i]; 
+                //element_wise_reduction(below_row, top_row, row_multiplier);
+                for (long i = 0; i < below_row.size(); i++) 
+                    below_row[i] -= row_multiplier * top_row[i];
+            }
+
+            ++top_row_i;
+        }
+    }
+    /*-------------------------------------------- HELPERS START --------------------------------------------*/
+    template <typename T, long Rows, long Cols>
+    bool Matrix<T, Rows, Cols>::zero_column(long col_i) const {
+        for (auto& row: storage) {
+            if (row[col_i] != 0) return false;
+        } 
+        return true;
+    }
+
+
+    template <typename T, long Rows, long Cols>
+    void Matrix<T, Rows, Cols>::reorder_rows_if_zero_at_top(long top_row_i, long col_i) {
+        if (storage[top_row_i][col_i] != 0) return;
+
+        for (long row_i = top_row_i+1; row_i < storage.size(); row_i++) {
+            if (storage[row_i][col_i] != 0) {
+                swap(storage[top_row_i][col_i], storage[row_i][col_i]);
+            }
+        }
+    }
+
+    template <typename T, long Rows, long Cols>
+    void Matrix<T, Rows, Cols>::element_wise_reduction(vector<T>& below_row, vector<T>& top_row, double row_multiplier) {
+        /*for (long i = 0; i < below_row.size(); i++) 
+            below_row[i] -= row_multiplier * top_row[i];*/
+    }
+
+    /*-------------------------------------------- HELPERS END --------------------------------------------*/
+
+
 
     template <typename T, long Rows, long Cols>
     T& Matrix<T, Rows, Cols>::operator() (long row_i, long col_i) {
