@@ -8,7 +8,6 @@
 using namespace std;
 
 namespace Leo {
-
     static const long Dynamic = -1;
     
     template<typename T, long Rows, long Cols>
@@ -22,10 +21,9 @@ namespace Leo {
                                 vector<vector<T>>, 
                                 array<array<T, Cols>, Rows>>::type storage;
             
+            // HELPERS
             bool is_zero_column(long col_i) const;
             void reorder_rows_if_zero_at_top(long top_row_i, long col_i);
-            template <typename V>
-            void element_wise_reduction(V& below_row, V& top_row, double row_multiplier);
 
         public:
             enum {
@@ -36,22 +34,23 @@ namespace Leo {
             Matrix();
             Matrix(long rows, long cols);
 
-            void EchelonForm();
+            auto EchelonForm();
+            auto ReducedEchelonForm();
             
             T& operator() (long row_i, long col_i);
             void operator<< (initializer_list<T>& coefficients);
+            //Matrix operator* (Matrix mat);
             
-            static Matrix<T, Rows, Cols> Random();
+            static auto Random();
             
             template <typename T1, long Rows1, long Cols1>
             friend ostream& operator<< (ostream& os, const Matrix<T1, Rows1, Cols1>& mat);
  
             
             // TODO
+            // auto T();
             // RandomNormal(4, 3)
             // Matrix(long dims);
-            // TODO ~Matrix();
-            // void T();
     };
 }
 

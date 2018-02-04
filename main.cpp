@@ -20,11 +20,11 @@ int main() {
 
     cout << myMat << endl;
 
-    myMat.EchelonForm();
-    randMat.EchelonForm();
+    
+    
 
-    cout << randMat << endl;
-    cout << myMat << endl;
+    cout << myMat.EchelonForm() << endl;
+    cout << randMat.EchelonForm() << endl;
 
     return 0;
 }

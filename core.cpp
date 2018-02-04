@@ -1,6 +1,6 @@
 #include <algorithm>
-#include <cmath>
 #include <random>
+#include <cmath>
 #include "core.h"
 
 #define IS_DYNAMIC_ASSERT(is_dynamic) static_assert(kIsDynamicStorage, "This method is intended for dynamic storage");
@@ -23,19 +23,21 @@ namespace Leo {
     }
 
     template <typename T, long Rows, long Cols>
-    void Matrix<T, Rows, Cols>::EchelonForm() {
+    auto Matrix<T, Rows, Cols>::EchelonForm() {
+        auto mat = *this;
+        
         long top_row_i = 0;
 
-        for (long col_i = 0; col_i < storage[0].size(); col_i++) {            
+        for (long col_i = 0; col_i < mat.storage[0].size(); col_i++) {            
             if (top_row_i == Rows-1) break;
-            if (is_zero_column(col_i)) continue;
+            if (mat.is_zero_column(col_i)) continue;
 
-            reorder_rows_if_zero_at_top(top_row_i, col_i);
+            mat.reorder_rows_if_zero_at_top(top_row_i, col_i);
             
             // REDUCE ROWS BELOW top_row
-            auto top_row = storage[top_row_i];
+            auto top_row = mat.storage[top_row_i];
             for (long row_i = top_row_i+1; row_i < Rows; row_i++) {
-                auto& below_row = storage[row_i];
+                auto& below_row = mat.storage[row_i];
                 
                 double row_multiplier = below_row[col_i] / top_row[col_i]; 
                 element_wise_reduction(below_row, top_row, row_multiplier);
@@ -43,15 +45,16 @@ namespace Leo {
 
             ++top_row_i;
         }
+        return mat;
     }
-
+    
     template <typename T, long Rows, long Cols>
     T& Matrix<T, Rows, Cols>::operator() (long row_i, long col_i) {
         return storage[row_i][col_i];
     }
 
     template <typename T, long Rows, long Cols>
-    Matrix<T, Rows, Cols> Matrix<T, Rows, Cols>::Random() {
+    auto Matrix<T, Rows, Cols>::Random() {
         NOT_DYNAMIC_ASSERT(kIsDynamicStorage)
 
         Matrix<T, Rows, Cols> randomMat;
@@ -87,13 +90,11 @@ namespace Leo {
 
     template <typename T, long Rows, long Cols>
     void Matrix<T, Rows, Cols>::operator<< (initializer_list<T>& coefficients) {
-        long row_i;
-        long col_i;
         long i {0};
 
         for (auto const& coeff: coefficients) {
-            row_i = i / Cols;
-            col_i = i % Cols;
+            long row_i = i / Cols;
+            long col_i = i % Cols;
 
             storage[row_i][col_i] = coeff;
             ++i;

@@ -25,9 +25,8 @@ void Matrix<T, Rows, Cols>::reorder_rows_if_zero_at_top(long top_row_i, long col
     swap(storage[top_row_i], storage[i_row_largest_coeff]);
 }
 
-template <typename T, long Rows, long Cols>
 template <typename V>
-void Matrix<T, Rows, Cols>::element_wise_reduction(V& below_row, V& top_row, double row_multiplier) {
+void element_wise_reduction(V& below_row, V& top_row, double row_multiplier) {
     for (long i = 0; i < below_row.size(); i++) 
         below_row[i] -= row_multiplier * top_row[i];
 }
