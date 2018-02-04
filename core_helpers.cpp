@@ -1,8 +1,8 @@
 template <typename T, long Rows, long Cols>
-bool Matrix<T, Rows, Cols>::is_zero_column(long col_i) const {
-    for (auto& row: storage) {
-        if (row[col_i] != 0) return false;
-    } 
+bool Matrix<T, Rows, Cols>::only_zeros_below(long top_row_i, long col_i) const {
+    for (long i = top_row_i+1; i < storage.size(); i++) {
+        if (storage[i][col_i] != 0) return false;
+    }
     return true;
 }
 

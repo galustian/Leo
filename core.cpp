@@ -30,7 +30,7 @@ namespace Leo {
 
         for (long col_i = 0; col_i < mat.storage[0].size(); col_i++) {            
             if (top_row_i == Rows-1) break;
-            if (mat.is_zero_column(col_i)) continue;
+            if (mat.only_zeros_below(top_row_i, col_i)) continue;
 
             mat.reorder_rows_if_zero_at_top(top_row_i, col_i);
             
@@ -47,6 +47,12 @@ namespace Leo {
         }
         return mat;
     }
+
+    /*template <typename T, long Rows, long Cols>
+    auto Matrix<T, Rows, Cols>::ReducedEchelonForm() {
+
+    }*/
+
     
     template <typename T, long Rows, long Cols>
     T& Matrix<T, Rows, Cols>::operator() (long row_i, long col_i) {

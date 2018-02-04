@@ -22,7 +22,7 @@ namespace Leo {
                                 array<array<T, Cols>, Rows>>::type storage;
             
             // HELPERS
-            bool is_zero_column(long col_i) const;
+            bool only_zeros_below(long row_i, long col_i) const;
             void reorder_rows_if_zero_at_top(long top_row_i, long col_i);
 
         public:
