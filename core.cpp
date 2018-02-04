@@ -3,8 +3,6 @@
 #include <cmath>
 #include "core.h"
 
-#include <iostream>
-
 #define IS_DYNAMIC_ASSERT(is_dynamic) static_assert(kIsDynamicStorage, "This method is intended for dynamic storage");
 #define NOT_DYNAMIC_ASSERT(is_dynamic) static_assert(!kIsDynamicStorage, "This method is intended for fixed storage");
 
