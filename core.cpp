@@ -3,6 +3,8 @@
 #include <cmath>
 #include "core.h"
 
+#include <iostream>
+
 #define IS_DYNAMIC_ASSERT(is_dynamic) static_assert(kIsDynamicStorage, "This method is intended for dynamic storage");
 #define NOT_DYNAMIC_ASSERT(is_dynamic) static_assert(!kIsDynamicStorage, "This method is intended for fixed storage");
 
@@ -26,32 +28,52 @@ namespace Leo {
     auto Matrix<T, Rows, Cols>::EchelonForm() {
         auto mat = *this;
         
-        long top_row_i = 0;
+        long top_row_i {0};
 
-        for (long col_i = 0; col_i < mat.storage[0].size(); col_i++) {            
+        for (long col_i = 0; col_i < Cols; col_i++) {            
             if (top_row_i == Rows-1) break;
-            if (mat.only_zeros_below(top_row_i, col_i)) continue;
+            if (mat.OnlyZerosBelow(top_row_i, col_i)) continue;
 
-            mat.reorder_rows_if_zero_at_top(top_row_i, col_i);
+            mat.ReorderRowsIfZeroAtTop(top_row_i, col_i);
             
             // REDUCE ROWS BELOW top_row
-            auto top_row = mat.storage[top_row_i];
-            for (long row_i = top_row_i+1; row_i < Rows; row_i++) {
-                auto& below_row = mat.storage[row_i];
-                
-                double row_multiplier = below_row[col_i] / top_row[col_i]; 
-                element_wise_reduction(below_row, top_row, row_multiplier);
+            const auto& top_row = mat.storage[top_row_i];
+            for (long row_i = top_row_i+1; row_i < Rows; row_i++) {               
+                mat.RowReduce(row_i, top_row_i, col_i);
             }
 
-            ++top_row_i;
+            top_row_i++;
         }
         return mat;
     }
 
-    /*template <typename T, long Rows, long Cols>
+    template <typename T, long Rows, long Cols>
     auto Matrix<T, Rows, Cols>::ReducedEchelonForm() {
+        auto mat = this->EchelonForm();
 
-    }*/
+        for (long bottom_row_i = Rows-1; bottom_row_i != -1; bottom_row_i--) {
+            auto& bottom_row = mat.storage[bottom_row_i];
+            
+            if (IsZeroRow(bottom_row)) continue;
+
+            long pivot_col_i = mat.GetPivotColumnPosition(bottom_row_i);
+            T pivot_value = mat.GetPivotRowValue(bottom_row_i);
+            cout << pivot_col_i << endl;
+            cout << "Val." << pivot_value << endl;
+
+            // UNIT SCALE bottom_row
+            for (T& coeff: bottom_row) {
+                coeff /= pivot_value;
+            }
+
+            // REDUCE ROWS ABOVE bottom_row
+            for (long row_i = bottom_row_i-1; row_i != -1; row_i--) {
+                mat.RowReduce(row_i, bottom_row_i, pivot_col_i);
+            }
+        }
+
+        return mat;
+    }
 
     
     template <typename T, long Rows, long Cols>
@@ -103,7 +125,8 @@ namespace Leo {
             long col_i = i % Cols;
 
             storage[row_i][col_i] = coeff;
-            ++i;
+            i++;
         }
     }
-}
+
+} // end namespace Leo

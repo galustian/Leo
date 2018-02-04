@@ -22,8 +22,9 @@ namespace Leo {
                                 array<array<T, Cols>, Rows>>::type storage;
             
             // HELPERS
-            bool only_zeros_below(long row_i, long col_i) const;
-            void reorder_rows_if_zero_at_top(long top_row_i, long col_i);
+            void RowReduce(long reduced_row_i, long row_i, long pivot_col_i);
+            bool OnlyZerosBelow(long row_i, long col_i) const;
+            void ReorderRowsIfZeroAtTop(long top_row_i, long col_i);
 
         public:
             enum {
@@ -36,10 +37,11 @@ namespace Leo {
 
             auto EchelonForm();
             auto ReducedEchelonForm();
+            T GetPivotRowValue(long row_i);
+            long GetPivotColumnPosition(long row_i);
             
             T& operator() (long row_i, long col_i);
             void operator<< (initializer_list<T>& coefficients);
-            //Matrix operator* (Matrix mat);
             
             static auto Random();
             
@@ -48,6 +50,10 @@ namespace Leo {
  
             
             // TODO
+            //Matrix operator* (Matrix mat);
+            // Matrix Inverse
+            // Slicing wiht initializer_list [{1, 2}, {0, -1}]
+            // Multithreading Support
             // auto T();
             // RandomNormal(4, 3)
             // Matrix(long dims);

@@ -1,17 +1,24 @@
+template <typename V>
+bool IsZeroRow(const V& row) {
+    for (auto coeff: row)
+        if (coeff != 0) return false;
+    
+    return true;
+}
+
 template <typename T, long Rows, long Cols>
-bool Matrix<T, Rows, Cols>::only_zeros_below(long top_row_i, long col_i) const {
+bool Matrix<T, Rows, Cols>::OnlyZerosBelow(long top_row_i, long col_i) const {
     for (long i = top_row_i+1; i < storage.size(); i++) {
         if (storage[i][col_i] != 0) return false;
     }
     return true;
 }
 
-
 template <typename T, long Rows, long Cols>
-void Matrix<T, Rows, Cols>::reorder_rows_if_zero_at_top(long top_row_i, long col_i) {
+void Matrix<T, Rows, Cols>::ReorderRowsIfZeroAtTop(long top_row_i, long col_i) {
     if (storage[top_row_i][col_i] != 0) return;
     
-    // CHOOSE ROW WITH LARGEST ABSOLUTE COEFFICIENT TO REDUCE ROUNDOFF ERRORS
+    // Partial Pivoting => CHOOSE ROW WITH LARGEST ABSOLUTE COEFFICIENT TO REDUCE ROUNDOFF ERRORS
     long abs_largest_coeff {0};
     long i_row_largest_coeff {0};
 
@@ -25,8 +32,29 @@ void Matrix<T, Rows, Cols>::reorder_rows_if_zero_at_top(long top_row_i, long col
     swap(storage[top_row_i], storage[i_row_largest_coeff]);
 }
 
-template <typename V>
-void element_wise_reduction(V& below_row, V& top_row, double row_multiplier) {
-    for (long i = 0; i < below_row.size(); i++) 
-        below_row[i] -= row_multiplier * top_row[i];
+template <typename T, long Rows, long Cols>
+void Matrix<T, Rows, Cols>::RowReduce(long reduced_row_i, long row_i, long pivot_col_i) {
+    auto& reduced_row = storage[reduced_row_i];
+    const auto& row = storage[row_i];
+    
+    double row_multiplier = reduced_row[pivot_col_i] / row[pivot_col_i];  
+    
+    for (long i = 0; i < Cols; i++) 
+        reduced_row[i] -= row_multiplier * row[i];    
+}
+
+template <typename T, long Rows, long Cols>
+T Matrix<T, Rows, Cols>::GetPivotRowValue(long row_i) {
+    for (T coeff: storage[row_i]) {
+        if (coeff != 0.0) return coeff;
+    }
+    throw "Row has no Pivot";
+}
+
+template <typename T, long Rows, long Cols>
+long Matrix<T, Rows, Cols>::GetPivotColumnPosition(long row_i) {
+    for (long col_i = 0; col_i < Cols; col_i++) {
+        if (storage[row_i][col_i] != 0.0) return col_i;
+    }
+    throw "Row has no Pivot";
 }
