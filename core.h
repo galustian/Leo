@@ -32,9 +32,10 @@ namespace Leo {
             Matrix(long rows, long cols);
 
             void EchelonForm();
-            bool zero_column(long col_i) const;
+            bool is_zero_column(long col_i) const;
             void reorder_rows_if_zero_at_top(long top_row_i, long col_i);
-            void element_wise_reduction(vector<T>& below_row, vector<T>& top_row, double row_multiplier);
+            template <typename V>
+            void element_wise_reduction(V& below_row, V& top_row, double row_multiplier);
             
             T& operator() (long row_i, long col_i);
             void operator<< (initializer_list<T>& coefficients);

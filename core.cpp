@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <random>
 #include "core.h"
 
@@ -21,15 +22,11 @@ namespace Leo {
 
     template <typename T, long Rows, long Cols>
     void Matrix<T, Rows, Cols>::EchelonForm() {
-        double row_multiplier;
         long top_row_i = 0;
 
-        for (long col_i = 0; col_i < storage[0].size(); col_i++) {
-            cout << "I" << endl;
-            
-            if (zero_column(col_i)) continue;
-
+        for (long col_i = 0; col_i < storage[0].size(); col_i++) {            
             if (top_row_i == Rows-1) break;
+            if (is_zero_column(col_i)) continue;
 
             reorder_rows_if_zero_at_top(top_row_i, col_i);
             
@@ -39,17 +36,16 @@ namespace Leo {
                 auto& below_row = storage[row_i];
                 
                 double row_multiplier = below_row[col_i] / top_row[col_i]; 
-                //element_wise_reduction(below_row, top_row, row_multiplier);
-                for (long i = 0; i < below_row.size(); i++) 
-                    below_row[i] -= row_multiplier * top_row[i];
+                element_wise_reduction(below_row, top_row, row_multiplier);
             }
 
             ++top_row_i;
         }
     }
+    // TODO create header-file for helpers
     /*-------------------------------------------- HELPERS START --------------------------------------------*/
     template <typename T, long Rows, long Cols>
-    bool Matrix<T, Rows, Cols>::zero_column(long col_i) const {
+    bool Matrix<T, Rows, Cols>::is_zero_column(long col_i) const {
         for (auto& row: storage) {
             if (row[col_i] != 0) return false;
         } 
@@ -60,18 +56,26 @@ namespace Leo {
     template <typename T, long Rows, long Cols>
     void Matrix<T, Rows, Cols>::reorder_rows_if_zero_at_top(long top_row_i, long col_i) {
         if (storage[top_row_i][col_i] != 0) return;
+        
+        // CHOOSE ROW WITH LARGEST ABSOLUTE COEFFICIENT TO REDUCE ROUNDOFF ERRORS
+        long abs_largest_coeff {0};
+        long i_row_largest_coeff {0};
 
         for (long row_i = top_row_i+1; row_i < storage.size(); row_i++) {
-            if (storage[row_i][col_i] != 0) {
-                swap(storage[top_row_i][col_i], storage[row_i][col_i]);
+            const T coeff = storage[row_i][col_i];
+            if (coeff != 0 && abs(coeff) > abs_largest_coeff) {
+                abs_largest_coeff = coeff;
+                i_row_largest_coeff = row_i;
             }
         }
+        swap(storage[top_row_i], storage[i_row_largest_coeff]);
     }
 
     template <typename T, long Rows, long Cols>
-    void Matrix<T, Rows, Cols>::element_wise_reduction(vector<T>& below_row, vector<T>& top_row, double row_multiplier) {
-        /*for (long i = 0; i < below_row.size(); i++) 
-            below_row[i] -= row_multiplier * top_row[i];*/
+    template <typename V>
+    void Matrix<T, Rows, Cols>::element_wise_reduction(V& below_row, V& top_row, double row_multiplier) {
+        for (long i = 0; i < below_row.size(); i++) 
+            below_row[i] -= row_multiplier * top_row[i];
     }
 
     /*-------------------------------------------- HELPERS END --------------------------------------------*/
