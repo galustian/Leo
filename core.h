@@ -50,13 +50,23 @@ namespace Leo {
  
             
             // TODO
-            //Matrix operator* (Matrix mat);
-            // Matrix Inverse
-            // Slicing wiht initializer_list [{1, 2}, {0, -1}]
-            // Multithreading Support
+            // Dot Products
+            // Inverse
+            // Determinant
+            
+            // Vector Space:
+            // Rank
+            // Row Space
+            // Column Space
+            // Null Space Basis (Basis is a minimal spanning set of that Vector Space)
+            // change-of-coordinates matrix from B to C
+            
+            
             // auto T();
-            // RandomNormal(4, 3)
+            // Slicing wiht initializer_list [{1, 2}, {0, -1}]
             // Matrix(long dims);
+            // RandomNormal(4, 3)
+            // Multithreading Support
     };
 }
 
